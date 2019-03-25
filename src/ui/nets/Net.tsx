@@ -8,10 +8,13 @@ import {
 } from "storm-react-diagrams";
 import { PlaceNodeFactory } from '../components/place/PlaceNodeFactory';
 import { PlaceNodeModel } from '../components/place/PlaceNodeModel';
+import { PlacePortModel } from '../components/place/PlacePortModel';
+import { SimplePortFactory } from '../components/place/SimplePortFactory';
 
 export const Graph: React.FunctionComponent = (props) => {
 	const engine = new DiagramEngine();
 	engine.installDefaultFactories();
+	engine.registerPortFactory(new SimplePortFactory("place", (config) => new PlacePortModel(config.name))) // TODO nao sei se functiona
 	engine.registerNodeFactory(new PlaceNodeFactory());
 	const model = new DiagramModel();
 
