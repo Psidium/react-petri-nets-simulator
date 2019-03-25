@@ -1,6 +1,11 @@
+export interface Coordinates {
+    x: number;
+    y: number;
+}
 export interface Transition {
     id: number;
     name: string;
+    position: Coordinates;
 }
 
 export interface Arc {
@@ -14,4 +19,5 @@ export interface Place {
     id: number;
     name: string;
     marks: number;
+    position: Coordinates;
 }
