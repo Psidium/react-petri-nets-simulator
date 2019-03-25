@@ -5,6 +5,8 @@
   "dependencies": {
     "node-sass": "^4.11.0",
     "react": "^16.8.4",
+    "react-dnd": "^7.3.2",
+    "react-dnd-html5-backend": "^7.2.0",
     "react-dom": "^16.8.4",
     "react-scripts-ts": "3.1.0",
     "storm-react-diagrams": "^5.2.1"

@@ -3,8 +3,68 @@
   width: 100vw;
   height: 100vh;
 }
+
+
+* {
+  color: #40514e;
+}
+
+.Button {
+
+}
+
 .net-canvas {
   width: 100%;
   height: 100%;
-  background-color: #606060
+  background-color: #e4f9f5;
+  /* text: #031634 */
+  /* borders: #033649 */
+}
+
+
+.grid-container {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr 50px;
+  grid-template-areas:
+    "sidenav main"
+    "footer footer";
+  height: 100vh;
+}
+
+.grid-side {
+  grid-area: sidenav;
+  background-color: #30e3ca;
+}
+
+.grid-main {
+  grid-area: main;
+}
+
+.grid-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  grid-area: footer;
+  background-color: #11999e;
+}
+
+.footer-child {
+  flex: 1;
+}
+
+.play-pause-buttons {
+  flex: 2;
+  display: flex;
+  justify-content: space-around;
+}
+
+.left-align {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.right-align {
+  display: flex;
+  justify-content: flex-end;
 }
