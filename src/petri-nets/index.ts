@@ -3,7 +3,7 @@ export interface Coordinates {
     y: number;
 }
 
-interface Node {
+export interface Node {
     nextNodes: Arc[];
 }
 
