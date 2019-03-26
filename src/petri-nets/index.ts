@@ -2,7 +2,12 @@ export interface Coordinates {
     x: number;
     y: number;
 }
-export interface Transition {
+
+interface Node {
+    nextNodes: Arc[];
+}
+
+export interface Transition extends Node {
     id: number;
     name: string;
     position: Coordinates;
@@ -15,7 +20,7 @@ export interface Arc {
     out: Place | Transition;
 }
 
-export interface Place {
+export interface Place extends Node {
     id: number;
     name: string;
     marks: number;
