@@ -1,41 +1,68 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   DiagramEngine,
   DiagramModel,
-  DiagramWidget
+  DiagramWidget,
+  PortModel
 } from "storm-react-diagrams";
-import { PlaceNodeFactory } from '../components/place/PlaceNodeFactory';
-import { PlaceNodeModel } from '../components/place/PlaceNodeModel';
-import { PlacePortModel } from '../components/place/PlacePortModel';
-import { SimplePortFactory } from '../components/SimplePortFactory';
-import { TransitionNodeFactory } from '../components/transition/TransitionNodeFactory';
-import { TransitionNodeModel } from '../components/transition/TransitionNodeModel';
+import { StateModel } from "../App";
+import { PlaceNodeFactory } from "../components/place/PlaceNodeFactory";
+import { PlaceNodeModel } from "../components/place/PlaceNodeModel";
+import { PlacePortModel } from "../components/place/PlacePortModel";
+import { SimplePortFactory } from "../components/SimplePortFactory";
+import { TransitionNodeFactory } from "../components/transition/TransitionNodeFactory";
+import { TransitionNodeModel } from "../components/transition/TransitionNodeModel";
+import { Place, Arc, Transition, NodeType } from "../../petri-nets";
 
-export const Graph: React.FunctionComponent = (props) => {
-	const engine = new DiagramEngine();
-	engine.installDefaultFactories();
-	engine.registerPortFactory(new SimplePortFactory("place", (config) => new PlacePortModel(config.name))) // TODO nao sei se functiona
-	engine.registerNodeFactory(new PlaceNodeFactory());
-	engine.registerNodeFactory(new TransitionNodeFactory());
-	const model = new DiagramModel();
+interface Prop {
+  model: StateModel;
+}
 
-	const node1 = new TransitionNodeModel();
-	const port1 = node1.getBottomPort();
-	node1.setPosition(200, 100);
+export const Graph: React.FunctionComponent<Prop> = props => {
+  const engine = new DiagramEngine();
+  engine.installDefaultFactories();
+  engine.registerPortFactory(
+    new SimplePortFactory("place", config => new PlacePortModel(config.name))
+  ); // TODO nao sei se functiona
+  engine.registerNodeFactory(new PlaceNodeFactory());
+  engine.registerNodeFactory(new TransitionNodeFactory());
+  const model = new DiagramModel();
 
+  function createPlaces(place: Place): PortModel {
 	const placeModel = new PlaceNodeModel();
-	const port2 = placeModel.getTopPort();
-	placeModel.setPosition(200, 400);
+	const { x, y } = place.position;
+	placeModel.setPosition(x, y);
+    model.addAll(placeModel);
+	place.nextNodes.forEach(arc => createArc(arc, placeModel.getBottomPort()));
+	return placeModel.getTopPort();
+  }
 
-	// link the ports
-	const link1 = port1.createLinkModel()!;
-	link1.setSourcePort(port1);
-	link1.setTargetPort(port2);
+  function createArc(arc: Arc, bottomPort: PortModel) {
+	let topPort: PortModel;
+	if (arc.out.type === NodeType.Place) {
+		topPort = createPlaces(arc.out);
+	} else if (arc.out.type === NodeType.Transition) {
+		topPort = createTransition(arc.out);
+	} else {
+		return;
+	}
+    const link = bottomPort.createLinkModel()!;
+    link.setSourcePort(bottomPort);
+    link.setTargetPort(topPort);
+    model.addAll(link);
+  }
 
-	model.addAll(node1, placeModel, link1);
+  function createTransition(transition: Transition): PortModel {
+	  const transModel = new TransitionNodeModel();
+	const { x, y } = transition.position;
+	transModel.setPosition(x, y);
+	  model.addAll(transModel);
+	  transition.nextNodes.forEach(arc => createArc(arc, transModel.getBottomPort()));
+	  return transModel.getTopPort();
+  }
+  props.model.petri.rootPlaces.forEach(place => createPlaces(place));
 
-	engine.setDiagramModel(model);
+  engine.setDiagramModel(model);
 
-	return (<DiagramWidget className="net-canvas" diagramEngine={engine} />);
-
+  return <DiagramWidget className="net-canvas" diagramEngine={engine} />;
 };
