@@ -1,45 +1,49 @@
 import * as React from 'react';
 import {
-  DropTarget,
-  ConnectDropTarget,
-  DropTargetMonitor,
-  XYCoord
+  ConnectDragSource,
+  DragSource,
+  DragSourceConnector,
+  DragSourceMonitor
 } from "react-dnd";
 import { NodeType } from '../../../petri-nets';
 
 interface DragableProps {
     type: NodeType;
-    connectDropTarget: ConnectDropTarget;
+    // Collected Props
+    isDragging?: boolean;
+    connectDragSource?: ConnectDragSource;
     createAt(type: NodeType, x: number, y: number): void;
-  }
+}
 
-class Dragable extends React.PureComponent<DragableProps> {
+class DragableComp extends React.PureComponent<DragableProps> {
     public dropAt(x: number, y: number) {
         this.props.createAt(this.props.type, x, y);
     }
 
     public render() {
-        return this.props.connectDropTarget(
-            <div>
+        return (
+            <div ref={this.props.connectDragSource}>
                 {this.props.children}
             </div>
-        );
+        )
     } 
 };
 
-export default DropTarget(
+export const Dragable = DragSource(
     'target',
     {
-        drop(
-            props: DragableProps,
-            monitor: DropTargetMonitor,
-            component: Dragable | null,
-        ) {
-            if (!component) { return; }
-
-            const { x, y } = monitor.getDifferenceFromInitialOffset() as XYCoord
-            component.dropAt(x, y);
-        }
+        beginDrag: (props: DragableProps) => ({ type: props.type }),
+        endDrag(props: DragableProps, monitor: DragSourceMonitor) {
+            const item = monitor.getItem();
+            const dropResult = monitor.getDropResult();
+            debugger;
+            if (dropResult) {
+                alert(`You dropped ${item.name} into ${dropResult.name}!`)
+            }
+        },
     },
-    (connect: any) => ({connectDropTarget: connect.dropTarget()})
-)(Dragable)
+    (connect: DragSourceConnector, monitor: DragSourceMonitor) => ({
+        connectDragSource: connect.dragSource(),
+        isDragging: monitor.isDragging(),
+    })
+)(DragableComp)

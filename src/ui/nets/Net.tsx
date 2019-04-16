@@ -13,9 +13,12 @@ import { SimplePortFactory } from "../components/SimplePortFactory";
 import { TransitionNodeFactory } from "../components/transition/TransitionNodeFactory";
 import { TransitionNodeModel } from "../components/transition/TransitionNodeModel";
 import { Place, Arc, Transition, NodeType } from "../../petri-nets";
+import { DropTarget, DropTargetConnector, ConnectDropTarget } from 'react-dnd';
 
 interface Prop {
   model: StateModel;
+  className?: string;
+  connectDropTarget?: ConnectDropTarget
 }
 
 export const Graph: React.FunctionComponent<Prop> = props => {
@@ -29,23 +32,23 @@ export const Graph: React.FunctionComponent<Prop> = props => {
   const model = new DiagramModel();
 
   function createPlaces(place: Place): PortModel {
-	const placeModel = new PlaceNodeModel();
-	const { x, y } = place.position;
-	placeModel.setPosition(x, y);
+    const placeModel = new PlaceNodeModel();
+    const { x, y } = place.position;
+    placeModel.setPosition(x, y);
     model.addAll(placeModel);
-	place.nextNodes.forEach(arc => createArc(arc, placeModel.getBottomPort()));
-	return placeModel.getTopPort();
+    place.nextNodes.forEach(arc => createArc(arc, placeModel.getBottomPort()));
+    return placeModel.getTopPort();
   }
 
   function createArc(arc: Arc, bottomPort: PortModel) {
-	let topPort: PortModel;
-	if (arc.out.type === NodeType.Place) {
-		topPort = createPlaces(arc.out);
-	} else if (arc.out.type === NodeType.Transition) {
-		topPort = createTransition(arc.out);
-	} else {
-		return;
-	}
+    let topPort: PortModel;
+    if (arc.out.type === NodeType.Place) {
+      topPort = createPlaces(arc.out);
+    } else if (arc.out.type === NodeType.Transition) {
+      topPort = createTransition(arc.out);
+    } else {
+      return;
+    }
     const link = bottomPort.createLinkModel()!;
     link.setSourcePort(bottomPort);
     link.setTargetPort(topPort);
@@ -53,16 +56,35 @@ export const Graph: React.FunctionComponent<Prop> = props => {
   }
 
   function createTransition(transition: Transition): PortModel {
-	  const transModel = new TransitionNodeModel();
-	const { x, y } = transition.position;
-	transModel.setPosition(x, y);
-	  model.addAll(transModel);
-	  transition.nextNodes.forEach(arc => createArc(arc, transModel.getBottomPort()));
-	  return transModel.getTopPort();
+    const transModel = new TransitionNodeModel();
+    const { x, y } = transition.position;
+    transModel.setPosition(x, y);
+    model.addAll(transModel);
+    transition.nextNodes.forEach(arc =>
+      createArc(arc, transModel.getBottomPort())
+    );
+    return transModel.getTopPort();
   }
   props.model.petri.rootPlaces.forEach(place => createPlaces(place));
 
   engine.setDiagramModel(model);
 
-  return <DiagramWidget className="net-canvas" diagramEngine={engine} />;
+  return <DiagramWidget className={props.className} diagramEngine={engine} />
 };
+
+class Wrapper extends React.PureComponent<Prop> {
+  public render() {
+    return (<div ref={this.props.connectDropTarget}  className="net-canvas">
+      <Graph className="net-canvas" model={this.props.model} />
+    </div>);
+  }
+}
+export const DropablaGraph = DropTarget<Prop>(
+  "target",
+  {
+    drop: () => ({}),
+  },
+  (connect: DropTargetConnector) => ({
+    connectDropTarget: connect.dropTarget(),
+  })
+)(Wrapper);

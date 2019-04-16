@@ -2,10 +2,10 @@ import * as React from 'react';
 import { OverlayPort } from '../OverlayPort';
 
 interface Props {
-    node: any;
+    node?: any;
 }
 
-export const TransitionNodeWidget: React.FC<Props> = (props) => {
+export const TransitionNodeWidget: React.FC<Props> = ({ node }) => {
     return (
       <div
         style={{
@@ -17,8 +17,8 @@ export const TransitionNodeWidget: React.FC<Props> = (props) => {
         <svg viewBox="0 0 100 100">
             <rect width="100" height="10" fill="black" />
         </svg>
-        <OverlayPort name="top" {...props} />
-        <OverlayPort name="bottom" {...props} />
+        {node && <OverlayPort name="top" node={node} />}
+        {node && <OverlayPort name="bottom" node={node} />}
       </div>
       );
 };

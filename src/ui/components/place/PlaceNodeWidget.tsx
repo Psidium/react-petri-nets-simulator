@@ -3,7 +3,7 @@ import { OverlayPort } from '../OverlayPort';
 import { PlaceNodeModel } from './PlaceNodeModel';
 
 export interface PlaceWidgetProps {
-    node: PlaceNodeModel;
+    node?: PlaceNodeModel;
 }
 
 export const PlaceNodeWidget: React.FC<PlaceWidgetProps> = (props) => {
@@ -13,6 +13,7 @@ export const PlaceNodeWidget: React.FC<PlaceWidgetProps> = (props) => {
         style={{
           height: "50px",
           position: "relative",
+          backgroundColor: "rgba(0,0,0,0)",
           width: "50px"
         }}
       >
@@ -26,8 +27,8 @@ export const PlaceNodeWidget: React.FC<PlaceWidgetProps> = (props) => {
             fill="white"
           />
         </svg>
-        <OverlayPort name="top" {...props} />
-        <OverlayPort name="bottom" {...props} />
+        { props.node && <OverlayPort name="top" node={props.node} /> }
+        { props.node && <OverlayPort name="bottom" node={props.node} /> }
       </div>
     );
 };

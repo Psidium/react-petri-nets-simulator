@@ -1,73 +1,74 @@
-import * as React from 'react';
-import { useState } from 'react';
+import * as React from "react";
+import { useState } from "react";
+import { DragDropContextProvider } from 'react-dnd';
+import HTML5Backend from "react-dnd-html5-backend";
 import "storm-react-diagrams/dist/style.min.css";
-import './App.css';
-import { Button } from './components/Button';
-import { Graph } from './nets/Net';
-import { Transition, Place, NodeType } from '../petri-nets';
-import Dragable from './components/draggable/Dragable';
-
+import { NodeType, Place, Transition } from "../petri-nets";
+import "./App.css";
+import { Button } from "./components/Button";
+import { Dragable } from "./components/draggable/Dragable";
+import { DropablaGraph } from "./nets/Net";
+import { PlaceNodeWidget } from './components/place/PlaceNodeWidget';
+import { TransitionNodeWidget } from './components/transition/TransitionWidget';
 
 export interface StateModel {
   petri: {
     rootPlaces: Place[];
     rootTransition: Transition[];
-  }
+  };
 }
-  interface DanglingNodes {
-    places: Place[];
-    transition: Transition[];
-  }
-
-const initialModel: StateModel = {
-  petri: {
-    rootPlaces: [
-      {
-        type: NodeType.Place,
-        id: 1,
-        name: "r",
-        marks: 0,
-        position: {
-          x: 200,
-          y: 100
-        },
-        nextNodes: [
-          {
-            type: NodeType.Arc,
-            weight: 0,
-            id: 2,
-            out: {
-              id: 3,
-              name: "trans",
-              type: NodeType.Transition,
-              position: {
-                x: 200,
-                y: 400
-              },
-              nextNodes: []
-            }
-          }
-        ]
-      }
-    ],
-    rootTransition: []
-  }
-};
 
 const App: React.SFC = props => {
-  const [model, setModel] = useState<StateModel>({...initialModel});
-  const [danglingPlaces, setDanglingPlaces] = useState([]);
-  const [danglingTransitions, setDanglingTransitions] = useState([]);
+  const [ danglingPlaces ] = useState<Place[]>([{
+    id: 1,
+    marks: 0,
+    name: "a",
+    position: {
+      x: 100, 
+      y: 200
+    },
+    type: NodeType.Place,
+    nextNodes: []
+  }]);
+  const [danglingTransitions, setDanglingTransitions] = useState<Transition[]>(
+    []
+  );
 
+  function addDragged(type: NodeType, x: number, y: number): void {
+    if (type === NodeType.Transition) {
+      setDanglingTransitions([
+        ...danglingTransitions,
+        {
+          id: Math.random(),
+          name: "trans",
+          type: NodeType.Transition,
+          position: { x, y },
+          nextNodes: []
+        }
+      ]);
+    }
+  }
 
   return (
+    <DragDropContextProvider backend={HTML5Backend}>
     <div className="grid-container">
       <aside className="grid-side">
-        <Dragable createAt={(type, x, y) => setModel()} >place pra arrastar</Dragable>
-        <div>transition pra arrastar</div>
+        <Dragable createAt={addDragged} type={NodeType.Place}>
+          <PlaceNodeWidget />
+        </Dragable>
+        <Dragable createAt={addDragged} type={NodeType.Transition}>
+          <TransitionNodeWidget />
+        </Dragable>
       </aside>
       <main className="grid-content">
-        <Graph model={model} />
+        <DropablaGraph
+          model={{
+            petri: {
+              rootPlaces: danglingPlaces,
+              rootTransition: danglingTransitions
+            }
+          }}
+        />
       </main>
       <footer className="grid-footer">
         <div className="footer-child left-align">
@@ -85,7 +86,8 @@ const App: React.SFC = props => {
           <Button>Save file</Button>
         </div>
       </footer>
-    </div>
+      </div>
+ </DragDropContextProvider>
   );
 };
 

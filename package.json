@@ -10,7 +10,8 @@
     "react-dnd-html5-backend": "^7.2.0",
     "react-dom": "^16.8.4",
     "react-scripts-ts": "3.1.0",
-    "storm-react-diagrams": "^5.2.1"
+    "storm-react-diagrams": "^5.2.1",
+    "type-fest": "^0.3.1"
   },
   "scripts": {
     "start": "react-scripts-ts start",
