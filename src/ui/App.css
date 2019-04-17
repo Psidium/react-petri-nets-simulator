@@ -4,14 +4,24 @@
   height: 100vh;
 }
 
-
 * {
   color: #40514e;
 }
 
 .Button {
-
+  width: 25px;
+  height: 25px;
+  border: 0px;
+  margin: 5px;
 }
+
+.Pause {
+  background:url(../images/pause-button.svg) left top no-repeat;
+} 
+
+.Play {
+  background:url(../images/play-button.svg) left top no-repeat;
+} 
 
 .net-canvas {
   width: 100%;

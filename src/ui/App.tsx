@@ -5,11 +5,11 @@ import HTML5Backend from "react-dnd-html5-backend";
 import "storm-react-diagrams/dist/style.min.css";
 import { NodeType, Place, Transition } from "../petri-nets";
 import "./App.css";
-import { Button } from "./components/Button";
+import { Button, PauseButton, PlayButton } from "./components/Button";
 import { Dragable } from "./components/draggable/Dragable";
-import { DropablaGraph } from "./nets/Net";
 import { PlaceNodeWidget } from './components/place/PlaceNodeWidget';
 import { TransitionNodeWidget } from './components/transition/TransitionWidget';
+import { DropablaGraph } from "./nets/Net";
 
 export interface StateModel {
   petri: {
@@ -77,8 +77,8 @@ const App: React.SFC = props => {
         <div className="footer-child play-pause-buttons">
           <div>
             <Button>Reset execution</Button>
-            <Button>Play</Button>
-            <Button>Stop</Button>
+            <PlayButton/>
+            <PauseButton/>
           </div>
         </div>
         <div className="footer-child right-align">
