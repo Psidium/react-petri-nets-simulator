@@ -16,11 +16,11 @@
 }
 
 .Pause {
-  background:url(../images/pause-button.svg) left top no-repeat;
+  background:url(./images/pause-button.svg) left top no-repeat;
 } 
 
 .Play {
-  background:url(../images/play-button.svg) left top no-repeat;
+  background:url(./images/play-button.svg) left top no-repeat;
 } 
 
 .net-canvas {
