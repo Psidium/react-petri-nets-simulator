@@ -19,7 +19,10 @@ export class SelectFileButton extends Component<Props, {}> {
   }
 
   public onFileSelected = (e: any) => {
-    let file = e.target.files[0];
+    const file = e.target.files[0];
+    if (!file) {
+      return;
+    }
     window.alert(`File is Selected: ${file.name}.`);
   }
   
