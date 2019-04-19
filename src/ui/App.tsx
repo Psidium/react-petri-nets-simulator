@@ -12,6 +12,8 @@ import { TransitionNodeWidget } from './components/transition/TransitionWidget';
 import { DropablaGraph } from "./nets/Net";
 import MButton from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
+import SaveIcon from '@material-ui/icons/Save';
+import LoadIcon from '@material-ui/icons/FolderOpen';
 
 export interface StateModel {
   petri: {
@@ -86,8 +88,12 @@ const App: React.SFC = props => {
           </div>
         </div>
         <div className="footer-child right-align">
-          <MButton variant="contained">Load file</MButton>
-          <MButton variant="contained">Save file</MButton>
+          <MButton variant="contained">Load 
+            <LoadIcon/>
+          </MButton>
+          <MButton variant="contained">Save file
+            <SaveIcon/>
+          </MButton>
         </div>
       </footer>
       </div>
