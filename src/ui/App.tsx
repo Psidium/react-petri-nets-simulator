@@ -88,7 +88,9 @@ const App: React.SFC = props => {
           </div>
         </div>
         <div className="footer-child right-align">
-          <MButton variant="contained">Load 
+          <MButton variant="contained" 
+            onClick={() => { console.log('onClick'); }}>
+            Load 
             <LoadIcon/>
           </MButton>
           <MButton variant="contained">Save file
