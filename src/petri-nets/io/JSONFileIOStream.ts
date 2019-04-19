@@ -1,4 +1,4 @@
-
+import * as fs from "fs";
 export class JSONFileIOStream {
   // private path = require('path');
   public static getInstance() {
@@ -9,13 +9,12 @@ export class JSONFileIOStream {
   }
   
   private static instance: JSONFileIOStream;
-  private fs = require('fs');
 
   public saveJSON(data: any, path: string) {
     this.createDirIfNeeded(path);
     const JSONModel = JSON.stringify(data);
     try {
-      this.fs.writeFileSync(path, JSONModel);
+      fs.writeFileSync(path, JSONModel);
     } catch(e) {
       throw new Error("Failed to save JSON File.");
     }
@@ -23,16 +22,16 @@ export class JSONFileIOStream {
 
   public readJSON(path: string): any {
     try {
-      const data = this.fs.readFileSync(path);
-      return JSON.parse(data);
+      const data = fs.readFileSync(path);
+      return JSON.parse(data.toString());
     } catch(e) {
       throw new Error("Failed to read JSON File.");
     }
   }
 
   private createDirIfNeeded(dirPath: string) {
-    if (!this.fs.existsSync(dirPath)){
-        this.fs.mkdirSync(dirPath);
+    if (!fs.existsSync(dirPath)){
+        fs.mkdirSync(dirPath);
     }
   }
 }

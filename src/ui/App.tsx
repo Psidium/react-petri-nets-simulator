@@ -14,6 +14,7 @@ import MButton from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
 import LoadIcon from '@material-ui/icons/FolderOpen';
+import { JSONFileIOStream } from 'src/petri-nets/io/JSONFileIOStream';
 
 export interface StateModel {
   petri: {
@@ -53,6 +54,10 @@ const App: React.SFC = props => {
     }
   }
 
+  function saveFile(): void {
+    JSONFileIOStream.getInstance().saveJSON({ test: 123 }, "test.json");
+  }
+
   return (
     <DragDropContextProvider backend={HTML5Backend}>
     <div className="grid-container">
@@ -89,7 +94,7 @@ const App: React.SFC = props => {
         </div>
         <div className="footer-child right-align">
           <MButton variant="contained" 
-            onClick={() => { console.log('onClick'); }}>
+            onClick={() => { saveFile(); }}>
             Load 
             <LoadIcon/>
           </MButton>
