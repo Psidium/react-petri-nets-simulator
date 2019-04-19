@@ -14,7 +14,7 @@ import MButton from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
 import LoadIcon from '@material-ui/icons/FolderOpen';
-import { JSONFileIOStream } from 'src/petri-nets/io/JSONFileIOStream';
+import { SelectFileButton } from './components/SelectFileButton';
 
 export interface StateModel {
   petri: {
@@ -54,9 +54,9 @@ const App: React.SFC = props => {
     }
   }
 
-  function saveFile(): void {
-    JSONFileIOStream.getInstance().saveJSON({ test: 123 }, "test.json");
-  }
+  // function saveFile(): void {
+  //   JSONFileIOStream.getInstance().saveJSON({ test: 123 }, "test.json");
+  // }
 
   return (
     <DragDropContextProvider backend={HTML5Backend}>
@@ -93,14 +93,12 @@ const App: React.SFC = props => {
           </div>
         </div>
         <div className="footer-child right-align">
-          <MButton variant="contained" 
-            onClick={() => { saveFile(); }}>
-            Load 
+          <SelectFileButton text="Load File"> 
             <LoadIcon/>
-          </MButton>
-          <MButton variant="contained">Save file
+          </SelectFileButton>
+          <SelectFileButton text="Save File">
             <SaveIcon/>
-          </MButton>
+          </SelectFileButton>
         </div>
       </footer>
       </div>
