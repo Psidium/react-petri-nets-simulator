@@ -11,7 +11,7 @@ export class JSONFileIOStream {
   private static instance: JSONFileIOStream;
   private fs = require('fs');
 
-  public saveJSON(data: Object, path: string) {
+  public saveJSON(data: any, path: string) {
     this.createDirIfNeeded(path);
     const JSONModel = JSON.stringify(data);
     try {
@@ -21,7 +21,7 @@ export class JSONFileIOStream {
     }
   }
 
-  public readJSON(path: string): Object {
+  public readJSON(path: string): any {
     try {
       const data = this.fs.readFileSync(path);
       return JSON.parse(data);
