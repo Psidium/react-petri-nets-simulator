@@ -10,6 +10,8 @@ import { Dragable } from "./components/draggable/Dragable";
 import { PlaceNodeWidget } from './components/place/PlaceNodeWidget';
 import { TransitionNodeWidget } from './components/transition/TransitionWidget';
 import { DropablaGraph } from "./nets/Net";
+import MButton from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 export interface StateModel {
   petri: {
@@ -72,7 +74,9 @@ const App: React.SFC = props => {
       </main>
       <footer className="grid-footer">
         <div className="footer-child left-align">
-          <Button>icone de lixo - limpar toda tela</Button>
+          <MButton variant="contained">Delete
+            <DeleteIcon />
+          </MButton>
         </div>
         <div className="footer-child play-pause-buttons">
           <div>
@@ -82,8 +86,8 @@ const App: React.SFC = props => {
           </div>
         </div>
         <div className="footer-child right-align">
-          <Button>Load file</Button>
-          <Button>Save file</Button>
+          <MButton variant="contained">Load file</MButton>
+          <MButton variant="contained">Save file</MButton>
         </div>
       </footer>
       </div>
