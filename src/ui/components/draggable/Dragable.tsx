@@ -3,7 +3,7 @@ import {
   ConnectDragSource,
   DragSource,
   DragSourceConnector,
-  DragSourceMonitor
+  DragSourceMonitor,
 } from "react-dnd";
 import { NodeType } from '../../../petri-nets';
 
@@ -12,14 +12,9 @@ interface DragableProps {
     // Collected Props
     isDragging?: boolean;
     connectDragSource?: ConnectDragSource;
-    createAt(type: NodeType, x: number, y: number): void;
 }
 
 class DragableComp extends React.PureComponent<DragableProps> {
-    public dropAt(x: number, y: number) {
-        this.props.createAt(this.props.type, x, y);
-    }
-
     public render() {
         return (
             <div ref={this.props.connectDragSource}>
@@ -34,12 +29,7 @@ export const Dragable = DragSource(
     {
         beginDrag: (props: DragableProps) => ({ type: props.type }),
         endDrag(props: DragableProps, monitor: DragSourceMonitor) {
-            const item = monitor.getItem();
-            const dropResult = monitor.getDropResult();
-            debugger;
-            if (dropResult) {
-                alert(`You dropped ${item.name} into ${dropResult.name}!`)
-            }
+            return null;
         },
     },
     (connect: DragSourceConnector, monitor: DragSourceMonitor) => ({

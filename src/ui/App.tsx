@@ -24,7 +24,7 @@ export interface StateModel {
 }
 
 const App: React.SFC = props => {
-  const [ danglingPlaces ] = useState<Place[]>([{
+  const [ danglingPlaces, setDanglingPlaces ] = useState<Place[]>([{
     id: 1,
     marks: 0,
     name: "a",
@@ -51,7 +51,20 @@ const App: React.SFC = props => {
           nextNodes: []
         }
       ]);
+    } else {
+      setDanglingPlaces([
+        ...danglingPlaces,
+        {
+          id: Math.random(),
+          name: "plaec",
+          type: NodeType.Place,
+          position: { x, y },
+          marks: 0,
+          nextNodes: []
+        }
+      ])
     }
+
   }
 
   async function onLoadFileSelected(file: File): Promise<void> {
@@ -64,15 +77,16 @@ const App: React.SFC = props => {
     <DragDropContextProvider backend={HTML5Backend}>
     <div className="grid-container">
       <aside className="grid-side">
-        <Dragable createAt={addDragged} type={NodeType.Place}>
+        <Dragable type={NodeType.Place}>
           <PlaceNodeWidget />
         </Dragable>
-        <Dragable createAt={addDragged} type={NodeType.Transition}>
+        <Dragable type={NodeType.Transition}>
           <TransitionNodeWidget />
         </Dragable>
       </aside>
       <main className="grid-content">
         <DropablaGraph
+          createAt={addDragged}
           model={{
             petri: {
               rootPlaces: danglingPlaces,

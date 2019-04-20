@@ -13,10 +13,11 @@ import { SimplePortFactory } from "../components/SimplePortFactory";
 import { TransitionNodeFactory } from "../components/transition/TransitionNodeFactory";
 import { TransitionNodeModel } from "../components/transition/TransitionNodeModel";
 import { Place, Arc, Transition, NodeType } from "../../petri-nets";
-import { DropTarget, DropTargetConnector, ConnectDropTarget } from 'react-dnd';
+import { DropTarget, DropTargetConnector, ConnectDropTarget, XYCoord } from 'react-dnd';
 
 interface Prop {
   model: StateModel;
+  createAt(type: NodeType, x: number, y: number): void;
   className?: string;
   connectDropTarget?: ConnectDropTarget
 }
@@ -66,6 +67,7 @@ export const Graph: React.FunctionComponent<Prop> = props => {
     return transModel.getTopPort();
   }
   props.model.petri.rootPlaces.forEach(place => createPlaces(place));
+  props.model.petri.rootTransition.forEach(transition => createTransition(transition));
 
   engine.setDiagramModel(model);
 
@@ -73,16 +75,45 @@ export const Graph: React.FunctionComponent<Prop> = props => {
 };
 
 class Wrapper extends React.PureComponent<Prop> {
+  public domRef: HTMLDivElement | null;
+
   public render() {
-    return (<div ref={this.props.connectDropTarget}  className="net-canvas">
-      <Graph className="net-canvas" model={this.props.model} />
+    return (<div ref={el => this.setRef(el)}  className="net-canvas">
+      <Graph className="net-canvas"  {...this.props} />
     </div>);
   }
+
+  private setRef(ref: HTMLDivElement | null): void {
+    if (this.props.connectDropTarget && ref)  {
+      this.props.connectDropTarget(ref);
+    }
+    this.domRef = ref;
+  }
+
 }
+
+async function getCurrentMousePosition(dom: HTMLDivElement): Promise<XYCoord> {
+    return new Promise((resolve, reject) => {
+        dom.addEventListener("mousemove", function (event: MouseEvent) {
+            resolve({
+                x: event.pageX - this.offsetLeft,
+                y: event.pageY - this.offsetTop
+            });
+        }, { once: true });
+    });
+}
+
 export const DropablaGraph = DropTarget<Prop>(
   "target",
   {
-    drop: () => ({}),
+    drop: (props, monitor, component: Wrapper) => {
+      const { type } = monitor.getItem() as { type: NodeType };
+      if (!component.domRef) { throw new Error("lifecycle error: does not have dom ref when needed");}
+      getCurrentMousePosition(component.domRef).then(({ x, y }) => {
+        props.createAt(type, x, y);
+      });
+      return undefined;
+    },
   },
   (connect: DropTargetConnector) => ({
     connectDropTarget: connect.dropTarget(),
