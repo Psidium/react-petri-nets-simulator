@@ -98,7 +98,7 @@ const App: React.SFC = props => {
           <LoadFileButton text="Load File"
             onFileSelected={onLoadFileSelected}/> 
           <SaveFileButton text="Save File"
-            model={danglingPlaces}/> //Model to be saved on JSON Files
+            model={danglingPlaces}/>
         </div>
       </footer>
       </div>
