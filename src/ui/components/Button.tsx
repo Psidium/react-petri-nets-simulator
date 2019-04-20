@@ -1,6 +1,6 @@
-import * as React from 'react';
 import MButton from '@material-ui/core/Button';
-import { PlayArrow, Stop, Refresh } from '@material-ui/icons';
+import { PlayArrow, Refresh, Stop } from '@material-ui/icons';
+import * as React from 'react';
 
 export const PlayButton: React.FunctionComponent = (props) => {
     return (<MButton variant="contained" >
