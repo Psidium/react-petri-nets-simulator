@@ -12,9 +12,9 @@ import { TransitionNodeWidget } from './components/transition/TransitionWidget';
 import { DropablaGraph } from "./nets/Net";
 import MButton from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
-import SaveIcon from '@material-ui/icons/Save';
-import LoadIcon from '@material-ui/icons/FolderOpen';
-import { SelectFileButton } from './components/SelectFileButton';
+import { LoadFileButton } from './components/LoadFileButton';
+import { SaveFileButton } from './components/SaveFileButton';
+import { JSONFileIOStream } from '../io/JSONFileIOStream';
 
 export interface StateModel {
   petri: {
@@ -54,9 +54,11 @@ const App: React.SFC = props => {
     }
   }
 
-  // function saveFile(): void {
-  //   JSONFileIOStream.getInstance().saveJSON({ test: 123 }, "test.json");
-  // }
+  async function onLoadFileSelected(file: File): Promise<void> {
+    const loadedData = await JSONFileIOStream.getInstance().readJSON(file);
+    //Data to populate into the model
+    console.log(loadedData);
+  }
 
   return (
     <DragDropContextProvider backend={HTML5Backend}>
@@ -93,12 +95,10 @@ const App: React.SFC = props => {
           </div>
         </div>
         <div className="footer-child right-align">
-          <SelectFileButton text="Load File"> 
-            <LoadIcon/>
-          </SelectFileButton>
-          <SelectFileButton text="Save File">
-            <SaveIcon/>
-          </SelectFileButton>
+          <LoadFileButton text="Load File"
+            onFileSelected={onLoadFileSelected}/> 
+          <SaveFileButton text="Save File"
+            model={danglingPlaces}/> //Model to be saved on JSON Files
         </div>
       </footer>
       </div>

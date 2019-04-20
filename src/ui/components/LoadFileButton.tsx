@@ -1,13 +1,19 @@
 import MButton from '@material-ui/core/Button';
+import LoadIcon from '@material-ui/icons/FolderOpen';
 import { Component } from 'react';
 import * as React from 'react';
-  
+
 interface Props { 
   text: string 
+  onFileSelected: (file: File) => void
 };
 
-export class SelectFileButton extends Component<Props, {}> {
+export class LoadFileButton extends Component<Props, {}> {
   private fileSelector: HTMLInputElement;
+
+  constructor(props: Props) {
+    super(props);
+  }
 
   public componentDidMount() {
     this.fileSelector = this.buildFileSelector();
@@ -15,25 +21,30 @@ export class SelectFileButton extends Component<Props, {}> {
   
   public handleFileSelect = (e: any) => {
     e.preventDefault();
+    this.fileSelector = this.buildFileSelector();
     this.fileSelector.click();
   }
 
-  public onFileSelected = (e: any) => {
+  public async onDialogFileSelected(e: any) {
     const file = e.target.files[0];
     if (!file) {
       return;
     }
-    window.alert(`File is Selected: ${file.name}.`);
+    this.props.onFileSelected(file);
   }
   
   public render() {
-    return <MButton variant="contained" onClick={this.handleFileSelect}>{this.props.text}</MButton>
+    return <MButton variant="contained" 
+      onClick={this.handleFileSelect}>
+        {this.props.text}
+      <LoadIcon/>
+    </MButton>
   }
 
   private buildFileSelector():HTMLInputElement {
     const fileSelector = document.createElement('input');
     fileSelector.setAttribute('type', 'file');
-    fileSelector.onchange = this.onFileSelected;
+    fileSelector.onchange = this.onDialogFileSelected.bind(this);
     return fileSelector;
   }
 
