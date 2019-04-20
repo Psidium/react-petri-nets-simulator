@@ -31,7 +31,7 @@ export class SaveFileButton extends Component<Props, {}> {
 
   private buildFileSelector():HTMLAnchorElement {
     const fileSelector = document.createElement('a');
-    fileSelector.setAttribute('download', 'test.txt');
+    fileSelector.setAttribute('download', 'petri-net.json');
     return fileSelector;
   }
 
