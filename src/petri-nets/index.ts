@@ -19,7 +19,6 @@ export interface Arc extends NormalizedArc {
     out: Place | Transition;
 };
 
-
 export interface NormalizedArc {
     type: NodeType.Arc;
     id: number;

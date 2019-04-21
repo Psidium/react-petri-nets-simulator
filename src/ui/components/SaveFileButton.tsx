@@ -3,10 +3,9 @@ import SaveIcon from '@material-ui/icons/Save';
 import { Component } from 'react';
 import * as React from 'react';
 import { JSONFileIOStream } from '../../io/JSONFileIOStream';
-import { NormalizedPlace, NormalizedTransition, NormalizedArc } from '../../petri-nets';
+import { NormalizedArc, NormalizedPlace, NormalizedTransition } from '../../petri-nets';
 
 interface Props { 
-  text: string,
   model: {
     places: NormalizedPlace[],
     transitions: NormalizedTransition[],
@@ -29,7 +28,7 @@ export class SaveFileButton extends Component<Props, {}> {
   }
 
   public render() {
-    return <MButton variant="contained" onClick={this.handleFileSelect(this.props)}>{this.props.text}
+    return <MButton variant="contained" onClick={this.handleFileSelect(this.props)}>
         <SaveIcon/>
     </MButton>
   }

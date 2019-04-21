@@ -33,7 +33,6 @@ export function normalizedToTreeConverter(
       const indexToRemove = outNodes.findIndex(({ id }) => id === arc.out.id);
       const [ removedNode ] = outNodes.splice(indexToRemove);
 
-
       const inNodes: Array<Place | Transition> = arc.in.type === NodeType.Place ? rootPlaces : rootTransition;
       const parentItem = inNodes.reduce((acc, node) => acc || findNodeWithIdInNode(arc.in.id, node), undefined);
       if (!parentItem) { throw new Error("CANNOT FIND PLACE OR TRANSITION FROM ARC")}

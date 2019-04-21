@@ -3,19 +3,17 @@ import { useState } from "react";
 import { DragDropContextProvider } from 'react-dnd';
 import HTML5Backend from "react-dnd-html5-backend";
 import "storm-react-diagrams/dist/style.min.css";
-import { NodeType, NormalizedPlace, NormalizedTransition, Place, Transition, NormalizedArc } from "../petri-nets";
+import { JSONFileIOStream } from '../io/JSONFileIOStream';
+import { NodeType, NormalizedArc, NormalizedPlace, NormalizedTransition, Place, Transition } from "../petri-nets";
+import { normalizedToTreeConverter } from '../petri-nets/normalizedToTreeConverter';
 import "./App.css";
-import { PauseButton, PlayButton, RestartButton } from "./components/Button";
+import { DeleteButton, PauseButton, PlayButton, RestartButton } from "./components/Button";
 import { Dragable } from "./components/draggable/Dragable";
+import { LoadFileButton } from './components/LoadFileButton';
 import { PlaceNodeWidget } from './components/place/PlaceNodeWidget';
+import { SaveFileButton } from './components/SaveFileButton';
 import { TransitionNodeWidget } from './components/transition/TransitionWidget';
 import { DropablaGraph } from "./nets/Net";
-import MButton from '@material-ui/core/Button';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { LoadFileButton } from './components/LoadFileButton';
-import { SaveFileButton } from './components/SaveFileButton';
-import { JSONFileIOStream } from '../io/JSONFileIOStream';
-import { normalizedToTreeConverter } from '../petri-nets/normalizedToTreeConverter';
 
 export interface StateModel {
   petri: {
@@ -54,10 +52,10 @@ const App: React.SFC = props => {
         ...places,
         {
           id: Math.random(),
-          name: "plaec",
+          name: "place",
           type: NodeType.Place,
           position: { x, y },
-          marks: 0,
+          marks: 0
         }
       ])
     }
@@ -75,7 +73,7 @@ const App: React.SFC = props => {
 
   async function onLoadFileSelected(file: File): Promise<void> {
     const loadedData = await JSONFileIOStream.getInstance().readJSON(file);
-    //Data to populate into the model
+    // Data to populate into the model
     console.log(loadedData);
   }
 
@@ -101,9 +99,7 @@ const App: React.SFC = props => {
       </main>
       <footer className="grid-footer">
         <div className="footer-child left-align">
-          <MButton variant="contained">Delete
-            <DeleteIcon />
-          </MButton>
+          <DeleteButton/>
         </div>
         <div className="footer-child play-pause-buttons">
           <div>
@@ -113,9 +109,9 @@ const App: React.SFC = props => {
           </div>
         </div>
         <div className="footer-child right-align">
-          <LoadFileButton text="Load File"
+          <LoadFileButton
             onFileSelected={onLoadFileSelected}/> 
-          <SaveFileButton text="Save File"
+          <SaveFileButton
             model={{places, transitions, arcs}}/>
         </div>
       </footer>

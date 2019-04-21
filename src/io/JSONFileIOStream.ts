@@ -1,8 +1,4 @@
-
-
-
 export class JSONFileIOStream {
-  // private path = require('path');
   public static getInstance() {
     if (this.instance) {
       return this.instance;
@@ -17,7 +13,6 @@ export class JSONFileIOStream {
     const blob = new Blob([jsonString], {type: "application/json"});
     return URL.createObjectURL(blob);
   }
-
 
   public async readJSON(file: File): Promise<any> {
     return new Promise((resolve, reject) => {

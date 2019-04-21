@@ -4,7 +4,6 @@ import { Component } from 'react';
 import * as React from 'react';
 
 interface Props { 
-  text: string 
   onFileSelected: (file: File) => void
 };
 
@@ -36,7 +35,6 @@ export class LoadFileButton extends Component<Props, {}> {
   public render() {
     return <MButton variant="contained" 
       onClick={this.handleFileSelect}>
-        {this.props.text}
       <LoadIcon/>
     </MButton>
   }

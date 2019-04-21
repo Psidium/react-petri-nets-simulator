@@ -4,21 +4,9 @@
   height: 100vh;
 }
 
-
 .Button {
-  width: 25px;
-  height: 25px;
-  border: 0px;
   margin: 5px;
 }
-
-.Pause {
-  background:url(./images/pause-button.svg) left top no-repeat;
-} 
-
-.Play {
-  background:url(./images/play-button.svg) left top no-repeat;
-} 
 
 .net-canvas {
   width: 100%;
@@ -27,7 +15,6 @@
   /* text: #031634 */
   /* borders: #033649 */
 }
-
 
 .grid-container {
   display: grid;
