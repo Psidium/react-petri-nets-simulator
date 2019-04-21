@@ -7,10 +7,13 @@ import { JSONFileIOStream } from '../io/JSONFileIOStream';
 import { NodeType, NormalizedArc, NormalizedPlace, NormalizedTransition, Place, Transition } from "../petri-nets";
 import { normalizedToTreeConverter } from '../petri-nets/normalizedToTreeConverter';
 import "./App.css";
-import { DeleteButton, PauseButton, PlayButton, RestartButton } from "./components/Button";
+import { DeleteButton } from './components/DeleteButton';
 import { Dragable } from "./components/draggable/Dragable";
 import { LoadFileButton } from './components/LoadFileButton';
+import { PauseButton } from './components/PauseButton';
 import { PlaceNodeWidget } from './components/place/PlaceNodeWidget';
+import { PlayButton } from './components/PlayButton';
+import { RestartButton } from './components/RestartButton';
 import { SaveFileButton } from './components/SaveFileButton';
 import { TransitionNodeWidget } from './components/transition/TransitionWidget';
 import { DropablaGraph } from "./nets/Net";
@@ -109,10 +112,8 @@ const App: React.SFC = props => {
           </div>
         </div>
         <div className="footer-child right-align">
-          <LoadFileButton
-            onFileSelected={onLoadFileSelected}/> 
-          <SaveFileButton
-            model={{places, transitions, arcs}}/>
+          <LoadFileButton onFileSelected={onLoadFileSelected}/> 
+          <SaveFileButton model={{places, transitions, arcs}}/>
         </div>
       </footer>
       </div>
