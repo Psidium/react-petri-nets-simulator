@@ -15,7 +15,7 @@ export interface Node extends NormalizedNode {
 export interface Place extends NormalizedPlace, Node {};
 export interface Transition extends NormalizedTransition, Node {};
 export interface Arc extends NormalizedArc {
-    in?: Place | Transition;
+    in: Place | Transition;
     out: Place | Transition;
 };
 
@@ -24,7 +24,7 @@ export interface NormalizedArc {
     type: NodeType.Arc;
     id: number;
     weight: number;
-    in?: NormalizedPlace | NormalizedTransition;
+    in: NormalizedPlace | NormalizedTransition;
     out: NormalizedPlace | NormalizedTransition;
 }
 

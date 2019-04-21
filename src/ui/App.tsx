@@ -3,7 +3,7 @@ import { useState } from "react";
 import { DragDropContextProvider } from 'react-dnd';
 import HTML5Backend from "react-dnd-html5-backend";
 import "storm-react-diagrams/dist/style.min.css";
-import { NodeType, Place, Transition } from "../petri-nets";
+import { NodeType, NormalizedPlace, NormalizedTransition, Place, Transition, NormalizedArc } from "../petri-nets";
 import "./App.css";
 import { PauseButton, PlayButton, RestartButton } from "./components/Button";
 import { Dragable } from "./components/draggable/Dragable";
@@ -15,6 +15,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { LoadFileButton } from './components/LoadFileButton';
 import { SaveFileButton } from './components/SaveFileButton';
 import { JSONFileIOStream } from '../io/JSONFileIOStream';
+import { normalizedToTreeConverter } from '../petri-nets/normalizedToTreeConverter';
 
 export interface StateModel {
   petri: {
@@ -24,7 +25,7 @@ export interface StateModel {
 }
 
 const App: React.SFC = props => {
-  const [ danglingPlaces, setDanglingPlaces ] = useState<Place[]>([{
+  const [ places, setPlaces ] = useState<NormalizedPlace[]>([{
     id: 1,
     marks: 0,
     name: "a",
@@ -33,40 +34,43 @@ const App: React.SFC = props => {
       y: 200
     },
     type: NodeType.Place,
-    nextNodes: []
   }]);
-  const [danglingTransitions, setDanglingTransitions] = useState<Transition[]>(
-    []
-  );
+  const [transitions, setTransitions] = useState<NormalizedTransition[]>([]);
+  const [arcs, setArcs] = useState<NormalizedArc[]>([]);
 
   function addDragged(type: NodeType, x: number, y: number): void {
     if (type === NodeType.Transition) {
-      setDanglingTransitions([
-        ...danglingTransitions,
+      setTransitions([
+        ...transitions,
         {
           id: Math.random(),
           name: "trans",
           type: NodeType.Transition,
           position: { x, y },
-          nextNodes: []
         }
       ]);
     } else {
-      setDanglingPlaces([
-        ...danglingPlaces,
+      setPlaces([
+        ...places,
         {
           id: Math.random(),
           name: "plaec",
           type: NodeType.Place,
           position: { x, y },
           marks: 0,
-          nextNodes: []
         }
       ])
     }
   }
 
-  function linkDangling(from: Place | Transition, to: Place | Transition): void {
+  function linkDangling(from: Transition | Place, to: Transition | Place): void {
+    setArcs([...arcs, {
+      id: Math.random(),
+      type: NodeType.Arc,
+      in: from,
+      out: to,
+      weight: 0
+    }]);
   }
 
   async function onLoadFileSelected(file: File): Promise<void> {
@@ -91,10 +95,7 @@ const App: React.SFC = props => {
           createAt={addDragged}
           linkDangling={linkDangling}
           model={{
-            petri: {
-              rootPlaces: danglingPlaces,
-              rootTransition: danglingTransitions
-            }
+            petri: normalizedToTreeConverter(places, transitions, arcs)
           }}
         />
       </main>
@@ -115,7 +116,7 @@ const App: React.SFC = props => {
           <LoadFileButton text="Load File"
             onFileSelected={onLoadFileSelected}/> 
           <SaveFileButton text="Save File"
-            model={danglingPlaces}/>
+            model={{places, transitions, arcs}}/>
         </div>
       </footer>
       </div>
