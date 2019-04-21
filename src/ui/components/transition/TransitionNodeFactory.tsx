@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { AbstractNodeFactory, DiagramEngine, NodeModel } from 'storm-react-diagrams';
-import { TransitionNodeModel } from './TransitionNodeModel';
 import { TransitionNodeWidget } from './TransitionWidget';
 
 
@@ -13,7 +12,7 @@ export class TransitionNodeFactory extends AbstractNodeFactory {
 		return <TransitionNodeWidget node={node} />;
 	}
 
-	public getNewInstance() {
-		return new TransitionNodeModel();
+	public getNewInstance(): NodeModel  {
+		throw new Error("METHOD NOT IMPLEMENTED");
 	}
 }

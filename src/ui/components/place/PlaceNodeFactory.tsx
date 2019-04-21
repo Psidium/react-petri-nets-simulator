@@ -13,7 +13,7 @@ export class PlaceNodeFactory extends AbstractNodeFactory {
 		return <PlaceNodeWidget node={node as PlaceNodeModel} />;
 	}
 
-	public getNewInstance() {
-		return new PlaceNodeModel();
+	public getNewInstance(): NodeModel  {
+		throw new Error("METHOD NOT IMPLEMENTED");
 	}
 }

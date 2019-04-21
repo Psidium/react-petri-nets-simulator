@@ -18,24 +18,43 @@ import { DropTarget, DropTargetConnector, ConnectDropTarget, XYCoord } from 'rea
 interface Prop {
   model: StateModel;
   createAt(type: NodeType, x: number, y: number): void;
+  linkDangling(from: Place | Transition, to: Place | Transition): void;
   className?: string;
   connectDropTarget?: ConnectDropTarget
 }
 
+const engine = new DiagramEngine();
+engine.installDefaultFactories();
+engine.registerPortFactory(
+  new SimplePortFactory("place", config => new PlacePortModel(config.name))
+); // TODO nao sei se functiona
+engine.registerNodeFactory(new PlaceNodeFactory());
+engine.registerNodeFactory(new TransitionNodeFactory());
+
 export const Graph: React.FunctionComponent<Prop> = props => {
-  const engine = new DiagramEngine();
-  engine.installDefaultFactories();
-  engine.registerPortFactory(
-    new SimplePortFactory("place", config => new PlacePortModel(config.name))
-  ); // TODO nao sei se functiona
-  engine.registerNodeFactory(new PlaceNodeFactory());
-  engine.registerNodeFactory(new TransitionNodeFactory());
   const model = new DiagramModel();
 
+  model.addListener({
+    offsetUpdated(event): void {
+      // TODO: add logic to update in the props.model the position of each elemennt
+    },
+    linksUpdated(event): void {
+      const { link } = event;
+      link.addListener({
+        targetPortChanged(event) {
+          if (!event.port) { return; }
+          if (link.getSourcePort().canLinkToPort(event.port)) {
+            const nodeFrom = link.getSourcePort().getNode() as PlaceNodeModel | TransitionNodeModel;
+            const nodeTo = link.getTargetPort().getNode() as PlaceNodeModel | TransitionNodeModel;
+            props.linkDangling(nodeFrom.realModel, nodeTo.realModel);
+          }
+        }
+      });
+    }
+
+  });
   function createPlaces(place: Place): PortModel {
-    const placeModel = new PlaceNodeModel();
-    const { x, y } = place.position;
-    placeModel.setPosition(x, y);
+    const placeModel = new PlaceNodeModel(place);
     model.addAll(placeModel);
     place.nextNodes.forEach(arc => createArc(arc, placeModel.getBottomPort()));
     return placeModel.getTopPort();
@@ -57,7 +76,7 @@ export const Graph: React.FunctionComponent<Prop> = props => {
   }
 
   function createTransition(transition: Transition): PortModel {
-    const transModel = new TransitionNodeModel();
+    const transModel = new TransitionNodeModel(transition);
     const { x, y } = transition.position;
     transModel.setPosition(x, y);
     model.addAll(transModel);

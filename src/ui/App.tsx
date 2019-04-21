@@ -64,7 +64,9 @@ const App: React.SFC = props => {
         }
       ])
     }
+  }
 
+  function linkDangling(from: Place | Transition, to: Place | Transition): void {
   }
 
   async function onLoadFileSelected(file: File): Promise<void> {
@@ -87,6 +89,7 @@ const App: React.SFC = props => {
       <main className="grid-content">
         <DropablaGraph
           createAt={addDragged}
+          linkDangling={linkDangling}
           model={{
             petri: {
               rootPlaces: danglingPlaces,

@@ -1,14 +1,14 @@
 
-import { Node } from "./index";
+import { NormalizedNode } from "./index";
 
 export interface Net {
-  addStartNodes(nodes: Node | Node[]): void;
+  addStartNodes(nodes: NormalizedNode | NormalizedNode[]): void;
 }
 
 export class Net implements Net{
-  private nodes: Node[];
+  private nodes: NormalizedNode[];
 
-  public addStartNodes(nodes: Node | Node[]) {
+  public addStartNodes(nodes: NormalizedNode | NormalizedNode[]) {
     this.nodes.concat(nodes);
   }
 }
