@@ -32,10 +32,8 @@ export function normalizedToTreeConverter(
       const outNodes: Array<Place | Transition> = arc.out.type === NodeType.Place ? rootPlaces : rootTransition;
       const indexToRemove = outNodes.findIndex(({ id }) => id === arc.out.id);
       const [ removedNode ] = outNodes.splice(indexToRemove);
-
-      const inNodes: Array<Place | Transition> = arc.in.type === NodeType.Place ? rootPlaces : rootTransition;
-      const parentItem = inNodes.reduce((acc, node) => acc || findNodeWithIdInNode(arc.in.id, node), undefined);
-      if (!parentItem) { throw new Error("CANNOT FIND PLACE OR TRANSITION FROM ARC")}
+      const parentItem = extractNodeFromAnywhere(arc, rootPlaces, rootTransition);
+      if (!parentItem) { throw new Error("CANNOT FIND ARC.OUT from any of the arrays.");}
       parentItem.nextNodes.push({ ...arc, in: parentItem, out: removedNode});
     }
   });
@@ -45,3 +43,13 @@ export function normalizedToTreeConverter(
     rootTransition
   };
 }
+function extractNodeFromAnywhere(arc: NormalizedArc, rootPlaces: Place[], rootTransition: Transition[]) {
+  const [ inNodesPossible, inNodesImpossible ] : Array<Array<Place | Transition>> = arc.in.type === NodeType.Place ? [ rootPlaces, rootTransition ] : [ rootTransition, rootPlaces ];
+  let parentItem = inNodesPossible.reduce((acc, node) => acc || findNodeWithIdInNode(arc.in.id, node), undefined);
+  if (!parentItem) {
+    //search from the other tree
+    parentItem = inNodesImpossible.reduce((acc, node) => acc || findNodeWithIdInNode(arc.in.id, node), undefined)
+  }
+  return parentItem;
+}
+
