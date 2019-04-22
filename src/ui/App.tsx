@@ -97,6 +97,12 @@ const App: React.SFC = props => {
     console.log(loadedData);
   }
 
+  function onDelete() {
+    setArcs([]);
+    setPlaces([]);
+    setTransitions([]);
+  }
+
   return (
     <DragDropContextProvider backend={HTML5Backend}>
     <div className="grid-container">
@@ -120,7 +126,7 @@ const App: React.SFC = props => {
       </main>
       <footer className="grid-footer">
         <div className="footer-child left-align">
-          <DeleteButton/>
+          <DeleteButton onDeleteClicked={onDelete}/>
         </div>
         <div className="footer-child play-pause-buttons">
           <div>
