@@ -11,13 +11,13 @@ import { DeleteButton } from './components/DeleteButton';
 import { Dragable } from "./components/draggable/Dragable";
 import { LoadFileButton } from './components/LoadFileButton';
 import { PauseButton } from './components/PauseButton';
+import { PlaceNodeModel } from './components/place/PlaceNodeModel';
 import { PlaceNodeWidget } from './components/place/PlaceNodeWidget';
 import { PlayButton } from './components/PlayButton';
 import { RestartButton } from './components/RestartButton';
 import { SaveFileButton } from './components/SaveFileButton';
 import { TransitionNodeWidget } from './components/transition/TransitionWidget';
 import { DropablaGraph } from "./nets/Net";
-import { PlaceNodeModel } from './components/place/PlaceNodeModel';
 
 export interface StateModel {
   petri: {
@@ -47,8 +47,8 @@ const App: React.SFC = props => {
         {
           id: Math.random(),
           name: "trans",
-          type: NodeType.Transition,
           position: { x, y },
+          type: NodeType.Transition
         }
       ]);
     } else {
@@ -56,23 +56,31 @@ const App: React.SFC = props => {
         ...places,
         {
           id: Math.random(),
+          marks: 0,
           name: "place",
-          type: NodeType.Place,
           position: { x, y },
-          marks: 0
+          type: NodeType.Place
         }
       ])
     }
   }
 
   function linkDangling(from: Transition | Place, to: Transition | Place): void {
-    setArcs([...arcs, {
-      id: Math.random(),
-      type: NodeType.Arc,
-      in: from,
-      out: to,
-      weight: 0
-    }]);
+    const arcToBeUpdated = arcs.find(arc => from.id === arc.in.id && to.id === arc.out.id);
+    if (arcToBeUpdated) {
+      arcToBeUpdated.weight++;
+      setArcs([...arcs]);
+    } else {
+      setArcs([
+        ...arcs,
+        {
+        id: Math.random(),
+        in: from,
+        out: to,
+        type: NodeType.Arc,
+        weight: 0
+      }]);
+    }
   }
 
   function updateMarks(node: PlaceNodeModel) {
