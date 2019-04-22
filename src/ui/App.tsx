@@ -17,6 +17,7 @@ import { RestartButton } from './components/RestartButton';
 import { SaveFileButton } from './components/SaveFileButton';
 import { TransitionNodeWidget } from './components/transition/TransitionWidget';
 import { DropablaGraph } from "./nets/Net";
+import { PlaceNodeModel } from './components/place/PlaceNodeModel';
 
 export interface StateModel {
   petri: {
@@ -74,6 +75,14 @@ const App: React.SFC = props => {
     }]);
   }
 
+  function updateMarks(node: PlaceNodeModel) {
+    const placeToBeUpdated = places.find(place => place.id === node.realModel.id);
+    if (placeToBeUpdated) {
+      placeToBeUpdated.marks = node.realModel.marks;
+    }
+    setPlaces([...places]);
+  }
+
   async function onLoadFileSelected(file: File): Promise<void> {
     const loadedData = await JSONFileIOStream.getInstance().readJSON(file);
     // Data to populate into the model
@@ -95,6 +104,7 @@ const App: React.SFC = props => {
         <DropablaGraph
           createAt={addDragged}
           linkDangling={linkDangling}
+          updateMarks={updateMarks}
           model={{
             petri: normalizedToTreeConverter(places, transitions, arcs)
           }}

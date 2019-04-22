@@ -6,14 +6,18 @@ export interface PlaceWidgetProps {
     node?: PlaceNodeModel;
 }
 
-export const PlaceNodeWidget: React.FC<PlaceWidgetProps> = (props) => {
+export class PlaceNodeWidget extends React.Component<PlaceWidgetProps, {}> {
+  public formatMarks(node?: PlaceNodeModel) {
+    return node && node.realModel.marks;
+  }
+
+  public render() {
     const strokeWidth = 7;
-    return (
-      <div
+    return <div
         style={{
+          backgroundColor: "rgba(0,0,0,0)",
           height: "50px",
           position: "relative",
-          backgroundColor: "rgba(0,0,0,0)",
           width: "50px"
         }}
       >
@@ -24,11 +28,11 @@ export const PlaceNodeWidget: React.FC<PlaceWidgetProps> = (props) => {
             cy="50%"
             stroke="black"
             strokeWidth={strokeWidth}
-            fill="white"
-          />
+            fill="white"/>
         </svg>
-        { props.node && <OverlayPort name="top" node={props.node} /> }
-        { props.node && <OverlayPort name="bottom" node={props.node} /> }
-      </div>
-    );
+        { this.props.node && <OverlayPort name="top" node={this.props.node} /> }
+        { this.props.node && <OverlayPort name="bottom" node={this.props.node} /> }
+        <text>{this.formatMarks(this.props.node)}</text>
+      </div>;
+  }
 };

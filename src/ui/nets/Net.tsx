@@ -1,10 +1,12 @@
 import * as React from "react";
+import { ConnectDropTarget, DropTarget, DropTargetConnector, XYCoord } from 'react-dnd';
 import {
   DiagramEngine,
   DiagramModel,
   DiagramWidget,
   PortModel
 } from "storm-react-diagrams";
+import { Arc, NodeType, Place, Transition } from "../../petri-nets";
 import { StateModel } from "../App";
 import { PlaceNodeFactory } from "../components/place/PlaceNodeFactory";
 import { PlaceNodeModel } from "../components/place/PlaceNodeModel";
@@ -12,15 +14,14 @@ import { PlacePortModel } from "../components/place/PlacePortModel";
 import { SimplePortFactory } from "../components/SimplePortFactory";
 import { TransitionNodeFactory } from "../components/transition/TransitionNodeFactory";
 import { TransitionNodeModel } from "../components/transition/TransitionNodeModel";
-import { Place, Arc, Transition, NodeType } from "../../petri-nets";
-import { DropTarget, DropTargetConnector, ConnectDropTarget, XYCoord } from 'react-dnd';
 
 interface Prop {
   model: StateModel;
-  createAt(type: NodeType, x: number, y: number): void;
-  linkDangling(from: Place | Transition, to: Place | Transition): void;
   className?: string;
   connectDropTarget?: ConnectDropTarget
+  createAt(type: NodeType, x: number, y: number): void;
+  linkDangling(from: Place | Transition, to: Place | Transition): void;
+  updateMarks(node: PlaceNodeModel): void;
 }
 
 const engine = new DiagramEngine();
@@ -35,6 +36,18 @@ export const Graph: React.FunctionComponent<Prop> = props => {
   const model = new DiagramModel();
 
   model.addListener({
+    nodesUpdated(event): void {
+      const { node } = event;
+      node.addListener({
+        selectionChanged() {
+          const place = node as PlaceNodeModel;
+          if (place.realModel.type === NodeType.Place) {
+            place.realModel.marks++;
+            props.updateMarks(place);
+          }
+        }
+      });
+    },
     offsetUpdated(event): void {
       // TODO: add logic to update in the props.model the position of each elemennt
     },
@@ -51,8 +64,8 @@ export const Graph: React.FunctionComponent<Prop> = props => {
         }
       });
     }
-
   });
+
   function createPlaces(place: Place): PortModel {
     const placeModel = new PlaceNodeModel(place);
     model.addAll(placeModel);
