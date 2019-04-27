@@ -28,14 +28,17 @@ export interface StateModel {
 
 const App: React.SFC = props => {
   const [ places, setPlaces ] = useState<NormalizedPlace[]>([{
+    color: "black",
     id: 1,
+    in: null,
     marks: 0,
     name: "a",
+    out: null,
     position: {
       x: 100, 
       y: 200
     },
-    type: NodeType.Place,
+    type: NodeType.Place
   }]);
   const [transitions, setTransitions] = useState<NormalizedTransition[]>([]);
   const [arcs, setArcs] = useState<NormalizedArc[]>([]);
@@ -46,7 +49,9 @@ const App: React.SFC = props => {
         ...transitions,
         {
           id: Math.random(),
+          in: null,
           name: "trans",
+          out: null,
           position: { x, y },
           type: NodeType.Transition
         }
@@ -55,13 +60,26 @@ const App: React.SFC = props => {
       setPlaces([
         ...places,
         {
+          color: "black",
           id: Math.random(),
+          in: null,
           marks: 0,
           name: "place",
+          out: null,
           position: { x, y },
           type: NodeType.Place
         }
       ])
+    }
+  }
+
+  function setArcToNodes(arc: NormalizedArc) {
+    if (arc.in.type === NodeType.Place) {
+      places.find(place => place.id === arc.in.id)!.out = arc;
+      transitions.find(transition => transition.id === arc.out.id)!.in = arc;
+    } else {
+      places.find(place => place.id === arc.out.id)!.in = arc;
+      transitions.find(transition => transition.id === arc.in.id)!.out = arc;
     }
   }
 
@@ -71,15 +89,15 @@ const App: React.SFC = props => {
       arcToBeUpdated.weight++;
       setArcs([...arcs]);
     } else {
-      setArcs([
-        ...arcs,
-        {
+      const arc = {
         id: Math.random(),
         in: from,
         out: to,
         type: NodeType.Arc,
-        weight: 0
-      }]);
+        weight: 1
+      } as NormalizedArc;
+      setArcs([...arcs, arc]);
+      setArcToNodes(arc);
     }
   }
 
@@ -101,6 +119,17 @@ const App: React.SFC = props => {
     setArcs([]);
     setPlaces([]);
     setTransitions([]);
+  }
+
+  function onPlay() {
+    const habilitatedPlaces = places.filter(place => place.out !== null && place.out.weight === place.marks);
+    habilitatedPlaces.forEach(place => place.color = "#16F011");
+    setPlaces([...places]);
+  }
+
+  function onPause() {
+    places.forEach(place => place.color = "black");
+    setPlaces([...places]);
   }
 
   return (
@@ -131,8 +160,8 @@ const App: React.SFC = props => {
         <div className="footer-child play-pause-buttons">
           <div>
             <RestartButton/>
-            <PlayButton/>
-            <PauseButton/>
+            <PlayButton onPlayClicked={onPlay}/>
+            <PauseButton onPauseClicked={onPause}/>
           </div>
         </div>
         <div className="footer-child right-align">

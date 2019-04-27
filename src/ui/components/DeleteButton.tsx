@@ -7,12 +7,8 @@ interface Props {
 };
 
 export class DeleteButton extends React.Component<Props, {}> {
-  constructor(props: Props) {
-    super(props);
-  }
-
   public handleDelete = (props: Props) => (e: any) => {
-    props.onDeleteClicked()
+    props.onDeleteClicked();
   }
 
   public render() {

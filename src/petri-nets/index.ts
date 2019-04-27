@@ -30,6 +30,7 @@ export interface NormalizedArc {
 export interface NormalizedPlace extends NormalizedNode {
     type: NodeType.Place;
     marks: number;
+    color: string;
 }
 
 export interface NormalizedTransition extends NormalizedNode {
@@ -40,4 +41,6 @@ export interface NormalizedNode {
     id: number;
     name: string;
     position: Coordinates;
+    in: NormalizedArc | null;
+    out: NormalizedArc | null;
 }

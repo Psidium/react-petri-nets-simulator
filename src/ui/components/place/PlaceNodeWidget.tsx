@@ -11,6 +11,10 @@ export class PlaceNodeWidget extends React.Component<PlaceWidgetProps, {}> {
     return node && node.realModel.marks;
   }
 
+  public formatColor(node?: PlaceNodeModel) {
+    return node ? node.realModel.color : "black";
+  }
+
   public render() {
     const strokeWidth = 7;
     return <div
@@ -19,22 +23,21 @@ export class PlaceNodeWidget extends React.Component<PlaceWidgetProps, {}> {
           height: "50px",
           position: "relative",
           width: "50px"
-        }}
-      >
+        }}>
         <svg viewBox="0 0 100 100">
           <g>
             <circle 
               r={50 - strokeWidth}
               cx="50%"
               cy="50%"
-              stroke="black"
+              stroke={this.formatColor(this.props.node)}
               strokeWidth={strokeWidth}
               fill="white"/>
             <text
               textAnchor="middle"
               x="50"
               y="60"
-              font-size="35"
+              fontSize="35"
               fill="black">
               {this.formatMarks(this.props.node)}
             </text>
