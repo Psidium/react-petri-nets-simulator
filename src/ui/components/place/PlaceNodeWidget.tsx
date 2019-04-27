@@ -22,17 +22,26 @@ export class PlaceNodeWidget extends React.Component<PlaceWidgetProps, {}> {
         }}
       >
         <svg viewBox="0 0 100 100">
-          <circle
-            r={50 - strokeWidth}
-            cx="50%"
-            cy="50%"
-            stroke="black"
-            strokeWidth={strokeWidth}
-            fill="white"/>
+          <g>
+            <circle 
+              r={50 - strokeWidth}
+              cx="50%"
+              cy="50%"
+              stroke="black"
+              strokeWidth={strokeWidth}
+              fill="white"/>
+            <text
+              textAnchor="middle"
+              x="50"
+              y="60"
+              font-size="35"
+              fill="black">
+              {this.formatMarks(this.props.node)}
+            </text>
+          </g>
         </svg>
         { this.props.node && <OverlayPort name="top" node={this.props.node} /> }
         { this.props.node && <OverlayPort name="bottom" node={this.props.node} /> }
-        <text>{this.formatMarks(this.props.node)}</text>
       </div>;
   }
 };
