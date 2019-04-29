@@ -124,7 +124,42 @@ const App: React.SFC = props => {
   function onPlay() {
     const habilitatedPlaces = places.filter(place => place.out !== null && place.out.weight === place.marks);
     habilitatedPlaces.forEach(place => place.color = "#16F011");
+    
+    const habilitedTransisions = fetchHabilitedTransitions();
+    habilitedTransisions.forEach((transition) => {
+      executeTransition(transition);
+    });
+
     setPlaces([...places]);
+  }
+
+  function fetchHabilitedTransitions() {
+    const habilitedTransisions: NormalizedTransition[] = [];
+    const validTransitions = transitions.filter(transition => transition.in !== null &&  transition.in !== null);
+    validTransitions.forEach((transition) => {
+      const arcIn = transition.in as NormalizedArc;
+      if(arcIn && arcIn.type === NodeType.Arc) {
+        const placeIn = arcIn.in as NormalizedPlace;
+        // placeIn.marks = 3; // mock marks
+        if (placeIn.marks > 0) {
+          habilitedTransisions.push(transition);
+        }
+      }
+    });
+    return habilitedTransisions;
+  }
+
+  function executeTransition(transition: NormalizedTransition) {
+    const arcIn = transition.in as NormalizedArc;
+    const placeIn = arcIn.in as NormalizedPlace;
+    const arcOut = transition.out as NormalizedArc;
+    const placeOut = arcOut.out as NormalizedPlace;
+    if (placeIn && placeIn.marks && arcIn && placeIn.marks >= arcIn.weight ) {
+      placeIn.marks -= arcIn.weight;
+    } 
+    if (placeOut && arcOut) {
+      placeOut.marks += arcOut.weight;
+    } 
   }
 
   function onPause() {
